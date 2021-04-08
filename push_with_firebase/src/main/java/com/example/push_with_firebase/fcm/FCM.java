@@ -13,7 +13,7 @@ import java.util.List;
 public class FCM {
     public void fcm_send(List<String> tokens, String title, String content) {
         try {
-            FileInputStream fileInputStream = new FileInputStream("/Users/seogeonhui/Documents/BACKEND/push_with_firebase/src/main/resources/fcm/categorychatservice-firebase-adminsdk-pgoe7-988a07f5da.json");
+            FileInputStream fileInputStream = new FileInputStream("/Users/seogeonhui/Documents/BACKEND/push/FCM_test/push_with_firebase/src/main/resources/fcm/categorychatservice-firebase-adminsdk-pgoe7-988a07f5da.json");
 
             FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(fileInputStream))
@@ -22,8 +22,6 @@ public class FCM {
             if(FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(firebaseOptions);
             }
-            /*
-            단일 폰에 보낼때
             Message message = Message.builder()
                     .setAndroidConfig(AndroidConfig.builder()
                             .setTtl(3600 * 1000)
@@ -35,19 +33,19 @@ public class FCM {
                                     .setColor("#000000")
                                     .build())
                             .build())
-                    .setToken(andr)
+                    .setToken(tokens.get(0))
                     .build();
-            */
 
             //여러 폰에 전송할때
-            MulticastMessage multicastMessage = MulticastMessage.builder()
+            /*MulticastMessage multicastMessage = MulticastMessage.builder()
                     .putData("title", title)
                     .putData("content", content)
                     .addAllTokens(tokens)
-                    .build();
+                    .build();*/
 
-            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(multicastMessage);
-            System.out.println(response.getSuccessCount() + " messages were sent successfully");
+            //BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(multicastMessage);
+            String response = FirebaseMessaging.getInstance().send(message);
+            System.out.println("Successfully sent Message : " + response);
         }catch (Exception e) {
             e.printStackTrace();
         }
